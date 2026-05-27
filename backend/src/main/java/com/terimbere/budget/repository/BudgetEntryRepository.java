@@ -1,0 +1,10 @@
+package com.terimbere.budget.repository;
+
+import com.terimbere.budget.model.BudgetEntry;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.UUID;
+
+@Repository
+public interface BudgetEntryRepository extends JpaRepository<BudgetEntry, UUID> {
+}
