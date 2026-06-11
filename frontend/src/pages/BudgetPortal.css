@@ -1,0 +1,262 @@
+.budget-portal {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.budget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.budget-header h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
+}
+
+.budget-header p {
+  color: var(--text-secondary);
+}
+
+.primary-btn,
+.secondary-btn,
+.small-btn {
+  border-radius: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--border-color);
+  font-weight: 500;
+  transition: var(--transition-normal);
+}
+
+.primary-btn {
+  background: var(--primary-color);
+  color: var(--primary-text);
+  border-color: var(--primary-color);
+}
+
+.primary-btn:hover {
+  background: var(--primary-hover);
+}
+
+.secondary-btn {
+  background: var(--surface-color);
+  color: var(--text-primary);
+}
+
+.small-btn {
+  padding: 0.35rem 0.6rem;
+  margin-right: 0.3rem;
+  font-size: 0.82rem;
+  background: #f8fafc;
+}
+
+.small-btn.danger {
+  color: #b91c1c;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.text-link {
+  color: var(--accent-color);
+  padding: 0;
+  margin-bottom: 0.35rem;
+  text-align: left;
+}
+
+.budget-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.budget-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1rem;
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+}
+
+.budget-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.budget-card h3 {
+  margin-bottom: 0.4rem;
+}
+
+.budget-card p {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+
+.card-summary {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+}
+
+.budget-form-card,
+.type-summary,
+.entry-form,
+.notes-section,
+.summary-grid article,
+.empty-state {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.budget-form-card h3 {
+  margin-bottom: 0.8rem;
+}
+
+.grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.grid.two-columns {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.grid.five-columns {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+}
+
+label small {
+  color: var(--text-tertiary);
+}
+
+input,
+select,
+textarea {
+  border: 1px solid var(--border-color);
+  border-radius: 0.55rem;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.92rem;
+  background: #fff;
+}
+
+.type-summary {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.type-summary strong {
+  font-size: 1.02rem;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.75rem;
+}
+
+.summary-grid h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.2rem;
+}
+
+.summary-grid p {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.table-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 0.8rem;
+  background: #fff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 980px;
+}
+
+th,
+td {
+  border-bottom: 1px solid #edf2f7;
+  padding: 0.6rem 0.55rem;
+  font-size: 0.88rem;
+  text-align: left;
+}
+
+thead th {
+  background: #f8fafc;
+  color: var(--text-secondary);
+}
+
+.totals-row td {
+  font-weight: 600;
+  background: #f8fafc;
+}
+
+.positive {
+  color: #15803d;
+}
+
+.negative {
+  color: #b91c1c;
+}
+
+.actions-row {
+  margin-top: 0.7rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.notes-section h3 {
+  margin-bottom: 0.55rem;
+}
+
+.empty-state h3 {
+  margin-bottom: 0.3rem;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+}
+
+.portal-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.portal-info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.9rem;
+}

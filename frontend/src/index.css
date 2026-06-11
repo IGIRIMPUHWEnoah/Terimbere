@@ -53,6 +53,7 @@ body {
   color: var(--text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 a {
@@ -89,6 +90,11 @@ input, textarea, select {
   padding: 2rem;
   margin-left: 250px; /* Sidebar width */
   transition: var(--transition-normal);
+  min-width: 0; /* allow children to shrink (prevents horizontal scroll) */
+}
+
+.page-content {
+  min-width: 0; /* critical for grids/charts */
 }
 
 @media (max-width: 768px) {

@@ -1,4 +1,4 @@
-.debts-portal {
+.income-portal {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -72,70 +72,106 @@
   text-align: right !important;
 }
 
-/* Tabs */
-.debts-main-card {
-  padding-top: 0; /* Let tabs sit at the top edge */
+/* Plan Cards Grid */
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
 }
 
-.tabs-container {
+.plan-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 2px solid transparent;
+}
+
+.plan-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.plan-card.active-plan {
+  border-color: var(--primary-color);
+}
+
+.plan-header {
   display: flex;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 1.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
-.tab-btn {
-  padding: 1.25rem 1.5rem;
+.plan-header h3 {
+  font-size: 1.1rem;
   font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  border-bottom: 3px solid transparent;
-  transition: var(--transition-normal);
-}
-
-.tab-btn:hover {
   color: var(--text-primary);
 }
 
-.tab-btn.active {
-  color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
+.plan-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
 }
 
-/* Specific Badges */
-.status-badge.active {
-  background-color: #dbeafe; /* light blue */
-  color: #1e40af;
+.plan-progress-container {
+  margin-top: 1rem;
 }
 
-.status-badge.partially_paid {
-  background-color: #fef08a; /* light yellow */
-  color: #854d0e;
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
 }
 
-.status-badge.paid {
+.progress-bar-bg {
+  height: 8px;
+  background-color: var(--surface-hover);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--success-color);
+  transition: width 0.3s ease;
+}
+
+/* Detail Section */
+.plan-detail-card {
+  margin-top: 1rem;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.source-status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.source-status.received {
   background-color: var(--success-bg);
   color: var(--success-color);
 }
 
-.status-badge.overdue {
-  background-color: #fee2e2;
-  color: var(--danger-color);
-}
-
-.contact-name {
-  font-weight: 600;
-  color: var(--text-primary);
+.source-status.pending {
+  background-color: #fef08a;
+  color: #854d0e;
 }
 
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: var(--text-tertiary);
-  font-style: italic;
-}
-
-.empty-row {
-  text-align: center;
   color: var(--text-tertiary);
   font-style: italic;
 }
@@ -148,6 +184,7 @@
   padding: 0.75rem 1rem;
 }
 
+/* Modals */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -194,11 +231,6 @@
   border-radius: 0.55rem;
   padding: 0.5rem 0.65rem;
   font-size: 0.92rem;
-}
-
-.modal-subtext {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
 }
 
 .icon-close {

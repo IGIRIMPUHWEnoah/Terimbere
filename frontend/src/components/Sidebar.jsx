@@ -1,9 +1,17 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Wallet, CreditCard, ReceiptText, TrendingUp, FileText, Settings, HelpCircle, LogOut, Users } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 import './Sidebar.css';
 
 const Sidebar = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
@@ -51,7 +59,7 @@ const Sidebar = () => {
             <HelpCircle size={20} />
             <span>Help Center</span>
           </NavLink>
-          <button className="nav-item logout-btn">
+          <button className="nav-item logout-btn" type="button" onClick={handleLogout}>
             <LogOut size={20} />
             <span>Log out</span>
           </button>

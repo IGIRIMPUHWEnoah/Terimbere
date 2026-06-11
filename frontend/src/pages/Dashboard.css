@@ -1,7 +1,8 @@
 .dashboard {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
+  min-width: 0;
 }
 
 .dashboard-controls {
@@ -51,19 +52,41 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
+  min-width: 0;
 }
 
 .middle-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 1.5rem;
+  min-width: 0;
+}
+
+.middle-grid > * {
+  min-width: 0; /* lets Recharts containers shrink instead of overflow */
+}
+
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .middle-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .card-header h3 {
@@ -219,7 +242,7 @@
 
 .data-table th {
   text-align: left;
-  padding: 1rem 0;
+  padding: 0.65rem 0;
   font-size: 0.875rem;
   color: var(--text-tertiary);
   font-weight: 500;
@@ -227,7 +250,7 @@
 }
 
 .data-table td {
-  padding: 1rem 0;
+  padding: 0.65rem 0;
   font-size: 0.875rem;
   font-weight: 500;
   border-bottom: 1px solid var(--border-color);
@@ -277,4 +300,74 @@
 .status-badge.pending {
   background-color: var(--bg-color);
   color: var(--text-secondary);
+}
+
+.loading-state,
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  color: var(--text-tertiary);
+}
+
+.chart-empty {
+  min-height: 250px;
+  font-style: italic;
+}
+
+.portal-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.savings-overview {
+  margin-top: 2rem;
+}
+
+.compact-table {
+  max-height: 330px;
+  overflow: auto;
+}
+
+.table-meta {
+  color: var(--text-tertiary);
+  font-size: 0.82rem;
+}
+
+.sort-btn {
+  color: inherit;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.sort-btn:hover {
+  color: var(--text-primary);
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.page-btn {
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  border-radius: 0.45rem;
+  padding: 0.3rem 0.6rem;
+  color: var(--text-primary);
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

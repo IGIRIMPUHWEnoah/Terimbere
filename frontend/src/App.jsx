@@ -5,8 +5,14 @@ import Register from './pages/Register';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import Debts from './pages/Debts';
+import Bills from './pages/Bills';
+import IncomePlanPortal from './pages/IncomePlanPortal';
+import Contacts from './pages/Contacts';
+import Reports from './pages/Reports';
 import Placeholder from './pages/Placeholder';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import BudgetPortal from './pages/BudgetPortal';
+import { AuthProvider } from './contexts/AuthProvider';
+import { useAuth } from './hooks/useAuth';
 import './App.css';
 
 // A simple layout wrapper for authenticated pages
@@ -42,12 +48,12 @@ function App() {
           
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
-          <Route path="/budgets" element={<ProtectedRoute><MainLayout><Placeholder title="Budgets" description="Create and manage your specific budgets here." /></MainLayout></ProtectedRoute>} />
+          <Route path="/budgets" element={<ProtectedRoute><MainLayout><BudgetPortal /></MainLayout></ProtectedRoute>} />
           <Route path="/debts" element={<ProtectedRoute><MainLayout><Debts /></MainLayout></ProtectedRoute>} />
-          <Route path="/bills" element={<ProtectedRoute><MainLayout><Placeholder title="Bills Management" description="Keep track of your recurring utility and service bills." /></MainLayout></ProtectedRoute>} />
-          <Route path="/income" element={<ProtectedRoute><MainLayout><Placeholder title="Income Plan" description="Strategize and monitor your income sources." /></MainLayout></ProtectedRoute>} />
-          <Route path="/contacts" element={<ProtectedRoute><MainLayout><Placeholder title="Contacts & Users" description="Manage your debtors, creditors, and system users." /></MainLayout></ProtectedRoute>} />
-          <Route path="/reports" element={<ProtectedRoute><MainLayout><Placeholder title="Reports & Exports" description="Generate and download Excel and PDF financial reports." /></MainLayout></ProtectedRoute>} />
+          <Route path="/bills" element={<ProtectedRoute><MainLayout><Bills /></MainLayout></ProtectedRoute>} />
+          <Route path="/income" element={<ProtectedRoute><MainLayout><IncomePlanPortal /></MainLayout></ProtectedRoute>} />
+          <Route path="/contacts" element={<ProtectedRoute><MainLayout><Contacts /></MainLayout></ProtectedRoute>} />
+          <Route path="/reports" element={<ProtectedRoute><MainLayout><Reports /></MainLayout></ProtectedRoute>} />
           
           <Route path="/settings" element={<ProtectedRoute><MainLayout><Placeholder title="Settings" description="Configure your application preferences." /></MainLayout></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><MainLayout><Placeholder title="Help Center" description="Get assistance and learn how to use Terimbere." /></MainLayout></ProtectedRoute>} />
