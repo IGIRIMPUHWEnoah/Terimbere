@@ -1,8 +1,11 @@
 package com.terimbere.budget.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,11 +17,13 @@ import java.util.UUID;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Budget {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -38,8 +43,21 @@ public class Budget {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    @Column(name = "budget_type", nullable = false, length = 20)
+    @Builder.Default
+    private String budgetType = "PERSONAL"; // PERSONAL, BUSINESS, PROJECT, SAVINGS, FAMILY
+
     @Column(nullable = false, length = 20)
     private String status; // ENUM: ACTIVE, ARCHIVED, DRAFT
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
+
+    @Column(name = "savings_goal", precision = 15, scale = 2)
+    private BigDecimal savingsGoal;
+
+    @Column(name = "project_total_budget", precision = 15, scale = 2)
+    private BigDecimal projectTotalBudget;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

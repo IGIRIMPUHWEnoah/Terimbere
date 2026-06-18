@@ -3,9 +3,16 @@ package com.terimbere.budget.controller;
 import com.terimbere.budget.dto.request.ContactRequest;
 import com.terimbere.budget.dto.request.DebtPaymentRequest;
 import com.terimbere.budget.dto.request.DebtRecordRequest;
+import com.terimbere.budget.dto.request.SchedulerConfigRequest;
+import com.terimbere.budget.dto.response.SchedulerConfigResponse;
 import com.terimbere.budget.model.Contact;
 import com.terimbere.budget.model.DebtPayment;
 import com.terimbere.budget.model.DebtRecord;
+import com.terimbere.budget.model.NotificationSettings;
+import com.terimbere.budget.model.User;
+import com.terimbere.budget.repository.NotificationSettingsRepository;
+import com.terimbere.budget.service.AuthService;
+import com.terimbere.budget.service.DebtScheduler;
 import com.terimbere.budget.service.DebtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,9 +32,18 @@ import java.util.UUID;
 public class DebtController {
 
     private final DebtService debtService;
+    private final AuthService authService;
+    private final NotificationSettingsRepository settingsRepository;
+    private final DebtScheduler debtScheduler;
 
-    public DebtController(DebtService debtService) {
+    public DebtController(DebtService debtService,
+                          AuthService authService,
+                          NotificationSettingsRepository settingsRepository,
+                          DebtScheduler debtScheduler) {
         this.debtService = debtService;
+        this.authService = authService;
+        this.settingsRepository = settingsRepository;
+        this.debtScheduler = debtScheduler;
     }
 
     // --- CONTACTS ---
@@ -66,9 +82,38 @@ public class DebtController {
 
     // --- DEBT RECORDS ---
     @GetMapping
-    @Operation(summary = "Get all debt records for current user")
-    public ResponseEntity<List<DebtRecord>> getAllDebtRecords() {
-        return ResponseEntity.ok(debtService.getAllDebtRecordsForCurrentUser());
+    @Operation(summary = "Get all debt records for current user with pagination")
+    public ResponseEntity<org.springframework.data.domain.Page<DebtRecord>> getAllDebtRecords(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt,desc") String[] sort) {
+        
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(
+                page, size, org.springframework.data.domain.Sort.by(
+                        sort[1].equalsIgnoreCase("desc") ? 
+                        org.springframework.data.domain.Sort.Direction.DESC : 
+                        org.springframework.data.domain.Sort.Direction.ASC, 
+                        sort[0]));
+                        
+        return ResponseEntity.ok(debtService.getAllDebtRecordsForCurrentUser(pageable));
+    }
+
+    @GetMapping("/filter")
+    @Operation(summary = "Get debtors or creditors with pagination", description = "Query param direction: 'THEY_OWE_ME' for debtors, or 'I_OWE_THEM' for creditors.")
+    public ResponseEntity<org.springframework.data.domain.Page<DebtRecord>> getDebtorsOrCreditors(
+            @RequestParam String direction,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt,desc") String[] sort) {
+            
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(
+                page, size, org.springframework.data.domain.Sort.by(
+                        sort[1].equalsIgnoreCase("desc") ? 
+                        org.springframework.data.domain.Sort.Direction.DESC : 
+                        org.springframework.data.domain.Sort.Direction.ASC, 
+                        sort[0]));
+                        
+        return ResponseEntity.ok(debtService.getDebtorsOrCreditors(direction, pageable));
     }
 
     @GetMapping("/{debtId}")
@@ -122,5 +167,58 @@ public class DebtController {
     @Operation(summary = "Get all active debt records where due date has passed")
     public ResponseEntity<List<DebtRecord>> getOverdueDebts() {
         return ResponseEntity.ok(debtService.getOverdueDebts());
+    }
+
+    // --- SCHEDULER CONFIGURATION ---
+    @GetMapping("/scheduler")
+    @Operation(summary = "Get current user's debt check scheduler configuration",
+               description = "Returns the hour and minute when the daily overdue-debt check is scheduled to run.")
+    public ResponseEntity<SchedulerConfigResponse> getSchedulerConfig() {
+        User user = authService.getCurrentAuthenticatedUser();
+        NotificationSettings settings = user.getNotificationSettings();
+        int hour = (settings != null && settings.getDebtCheckHour() != null) ? settings.getDebtCheckHour() : 0;
+        int minute = (settings != null && settings.getDebtCheckMinute() != null) ? settings.getDebtCheckMinute() : 0;
+
+        return ResponseEntity.ok(SchedulerConfigResponse.builder()
+                .hour(hour)
+                .minute(minute)
+                .cronExpression(String.format("0 %d %d * * ?", minute, hour))
+                .displayTime(String.format("%02d:%02d", hour, minute))
+                .build());
+    }
+
+    @PutMapping("/scheduler")
+    @Operation(summary = "Update the debt check scheduler time",
+               description = "Set the hour (0–23) and minute (0–59) for the daily overdue-debt check. Changes take effect immediately.")
+    public ResponseEntity<SchedulerConfigResponse> updateSchedulerConfig(@Valid @RequestBody SchedulerConfigRequest request) {
+        User user = authService.getCurrentAuthenticatedUser();
+        NotificationSettings settings = user.getNotificationSettings();
+        if (settings == null) {
+            throw new IllegalStateException("Notification settings not found for user.");
+        }
+
+        settings.setDebtCheckHour(request.getHour());
+        settings.setDebtCheckMinute(request.getMinute());
+        settingsRepository.save(settings);
+
+        // Reschedule the task dynamically
+        debtScheduler.scheduleForUser(user);
+
+        int hour = request.getHour();
+        int minute = request.getMinute();
+        return ResponseEntity.ok(SchedulerConfigResponse.builder()
+                .hour(hour)
+                .minute(minute)
+                .cronExpression(String.format("0 %d %d * * ?", minute, hour))
+                .displayTime(String.format("%02d:%02d", hour, minute))
+                .build());
+    }
+
+    @PostMapping("/scheduler/run-now")
+    @Operation(summary = "Trigger the overdue-debt check manually right now")
+    public ResponseEntity<String> runSchedulerNow() {
+        User user = authService.getCurrentAuthenticatedUser();
+        debtScheduler.runOverdueCheckForUser(user.getId());
+        return ResponseEntity.ok("Overdue debt check executed successfully.");
     }
 }

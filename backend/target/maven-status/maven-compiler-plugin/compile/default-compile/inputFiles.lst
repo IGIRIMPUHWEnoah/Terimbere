@@ -1,5 +1,6 @@
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\request\BillPaymentRequest.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\security\JwtTokenProvider.java
+C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\service\DebtScheduler.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\request\TokenRefreshRequest.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\model\IncomePlan.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\controller\NotificationController.java
@@ -12,12 +13,15 @@ C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terim
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\service\ContractStorageService.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\model\User.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\TerimbereApplication.java
+C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\request\SchedulerConfigRequest.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\model\BudgetEntry.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\exception\GlobalExceptionHandler.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\request\BudgetEntryRequest.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\request\LoginRequest.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\service\IncomeService.java
+C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\model\DebtInstallment.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\repository\NotificationRepository.java
+C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\repository\DebtInstallmentRepository.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\request\BudgetRequest.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\controller\IncomePlanController.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\security\CustomUserDetailsService.java
@@ -25,6 +29,7 @@ C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terim
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\repository\NotificationSettingsRepository.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\repository\RefreshTokenRepository.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\service\ReportService.java
+C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\config\DatabaseSchemaUpdater.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\request\NotificationSettingsRequest.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\controller\BudgetController.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\model\Contract.java
@@ -50,6 +55,7 @@ C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terim
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\repository\IncomeSourceRepository.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\service\AuthService.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\service\DebtService.java
+C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\response\SchedulerConfigResponse.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\repository\ContractRepository.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\controller\DebtController.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\config\OpenApiConfig.java
@@ -61,6 +67,7 @@ C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terim
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\repository\IncomePlanRepository.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\request\RegisterRequest.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\repository\DebtRecordRepository.java
+C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\config\SchedulerConfig.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\model\NotificationSettings.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\dto\request\IncomeSourceRequest.java
 C:\Users\HP\Desktop\ProductionProjects\Terimbere\backend\src\main\java\com\terimbere\budget\model\RefreshToken.java

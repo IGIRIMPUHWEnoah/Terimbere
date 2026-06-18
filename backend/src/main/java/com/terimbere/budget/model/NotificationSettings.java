@@ -36,4 +36,12 @@ public class NotificationSettings {
     @Column(name = "days_before_contract_expiry")
     @Builder.Default
     private Integer daysBeforeContractExpiry = 7;
+
+    @Column(name = "debt_check_hour")
+    @Builder.Default
+    private Integer debtCheckHour = 0;
+
+    @Column(name = "debt_check_minute")
+    @Builder.Default
+    private Integer debtCheckMinute = 0;
 }

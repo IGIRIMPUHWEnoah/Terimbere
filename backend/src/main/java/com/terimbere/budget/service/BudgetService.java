@@ -32,13 +32,13 @@ public class BudgetService {
     @Transactional(readOnly = true)
     public List<Budget> getAllBudgetsForCurrentUser() {
         User user = authService.getCurrentAuthenticatedUser();
-        return budgetRepository.findByUser(user);
+        return budgetRepository.findByUserWithEntries(user);
     }
 
     @Transactional(readOnly = true)
     public Budget getBudgetById(UUID budgetId) {
         User user = authService.getCurrentAuthenticatedUser();
-        Budget budget = budgetRepository.findById(budgetId)
+        Budget budget = budgetRepository.findByIdWithEntries(budgetId)
                 .orElseThrow(() -> new ResourceNotFoundException("Budget not found"));
         if (!budget.getUser().getId().equals(user.getId())) {
             throw new SecurityException("Unauthorized access to budget");
@@ -57,6 +57,10 @@ public class BudgetService {
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .status(request.getStatus())
+                .budgetType(request.getBudgetType() != null ? request.getBudgetType() : "PERSONAL")
+                .notes(request.getNotes())
+                .savingsGoal(request.getSavingsGoal())
+                .projectTotalBudget(request.getProjectTotalBudget())
                 .build();
         return budgetRepository.save(budget);
     }
@@ -70,6 +74,12 @@ public class BudgetService {
         budget.setStartDate(request.getStartDate());
         budget.setEndDate(request.getEndDate());
         budget.setStatus(request.getStatus());
+        if (request.getBudgetType() != null) {
+            budget.setBudgetType(request.getBudgetType());
+        }
+        budget.setNotes(request.getNotes());
+        budget.setSavingsGoal(request.getSavingsGoal());
+        budget.setProjectTotalBudget(request.getProjectTotalBudget());
         return budgetRepository.save(budget);
     }
 
@@ -89,6 +99,7 @@ public class BudgetService {
                 .plannedAmount(request.getPlannedAmount())
                 .actualAmount(request.getActualAmount() != null ? request.getActualAmount() : BigDecimal.ZERO)
                 .entryDate(request.getEntryDate())
+                .amountSaved(request.getAmountSaved())
                 .build();
         budget.addEntry(entry);
         budgetRepository.save(budget);
@@ -113,6 +124,7 @@ public class BudgetService {
             entry.setActualAmount(request.getActualAmount());
         }
         entry.setEntryDate(request.getEntryDate());
+        entry.setAmountSaved(request.getAmountSaved());
 
         return budgetEntryRepository.save(entry);
     }

@@ -5,6 +5,7 @@ import com.terimbere.budget.dto.request.DebtPaymentRequest;
 import com.terimbere.budget.dto.request.DebtRecordRequest;
 import com.terimbere.budget.model.*;
 import com.terimbere.budget.repository.*;
+import com.terimbere.budget.repository.DebtInstallmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -34,6 +35,9 @@ public class DebtServiceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @MockBean
+    private DebtInstallmentRepository debtInstallmentRepository;
 
     @MockBean
     private AuthService authService;

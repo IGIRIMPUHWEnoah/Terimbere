@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowUpRight, ArrowDownLeft, AlertCircle, Plus, X } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, AlertCircle, Plus, X, Clock, RefreshCw, Settings, Play } from 'lucide-react';
 import Card from '../components/ui/Card';
 import { debtService } from '../services/api';
 import { formatCurrency, numberValue } from '../utils/budgetHelpers';
@@ -17,7 +17,10 @@ const emptyContactForm = () => ({
 const emptyDebtForm = () => ({
   contactId: '',
   originalAmount: '',
-  dueDate: ''
+  dueDate: '',
+  schedulingMode: 'SINGLE',
+  frequency: 'MONTHLY',
+  numberOfInstallments: ''
 });
 
 const emptyPaymentForm = () => ({
@@ -44,6 +47,14 @@ const Debts = () => {
   const [debtForm, setDebtForm] = useState(emptyDebtForm());
   const [paymentForm, setPaymentForm] = useState(emptyPaymentForm());
   const [selectedDebt, setSelectedDebt] = useState(null);
+
+  // Scheduler state
+  const [schedulerConfig, setSchedulerConfig] = useState({ hour: 0, minute: 0, displayTime: '00:00', cronExpression: '' });
+  const [schedulerTime, setSchedulerTime] = useState('00:00');
+  const [isSchedulerSaving, setIsSchedulerSaving] = useState(false);
+  const [isRunningNow, setIsRunningNow] = useState(false);
+  const [schedulerMessage, setSchedulerMessage] = useState('');
+  const [showSchedulerSettings, setShowSchedulerSettings] = useState(false);
 
   const loadDebtsData = useCallback(async (currentPage = page) => {
     try {
@@ -123,6 +134,53 @@ const Debts = () => {
     };
   }, [activeTab, page]);
 
+  // Load scheduler config on mount
+  useEffect(() => {
+    const loadSchedulerConfig = async () => {
+      try {
+        const res = await debtService.getSchedulerConfig();
+        setSchedulerConfig(res.data);
+        setSchedulerTime(res.data.displayTime || '00:00');
+      } catch (err) {
+        // Silently fail — defaults to midnight
+      }
+    };
+    loadSchedulerConfig();
+  }, []);
+
+  const handleSaveScheduler = async () => {
+    const [h, m] = schedulerTime.split(':').map(Number);
+    if (isNaN(h) || isNaN(m) || h < 0 || h > 23 || m < 0 || m > 59) {
+      setSchedulerMessage('Invalid time. Use HH:MM format (00-23 : 00-59).');
+      return;
+    }
+    try {
+      setIsSchedulerSaving(true);
+      setSchedulerMessage('');
+      const res = await debtService.updateSchedulerConfig({ hour: h, minute: m });
+      setSchedulerConfig(res.data);
+      setSchedulerMessage(`Scheduler updated! Overdue check will run daily at ${res.data.displayTime}.`);
+    } catch (err) {
+      setSchedulerMessage(err.response?.data?.message || 'Failed to update scheduler.');
+    } finally {
+      setIsSchedulerSaving(false);
+    }
+  };
+
+  const handleRunNow = async () => {
+    try {
+      setIsRunningNow(true);
+      setSchedulerMessage('');
+      await debtService.runSchedulerNow();
+      setSchedulerMessage('Overdue check completed successfully!');
+      await loadDebtsData();
+    } catch (err) {
+      setSchedulerMessage(err.response?.data?.message || 'Failed to run scheduler.');
+    } finally {
+      setIsRunningNow(false);
+    }
+  };
+
   const openDebtModal = () => {
     setDebtForm({
       ...emptyDebtForm(),
@@ -159,7 +217,10 @@ const Debts = () => {
         debtDirection: activeTab === 'DEBTORS' ? 'THEY_OWE_ME' : 'I_OWE_THEM',
         originalAmount: numberValue(debtForm.originalAmount),
         dueDate: debtForm.dueDate,
-        status: 'ACTIVE'
+        status: 'ACTIVE',
+        schedulingMode: debtForm.schedulingMode,
+        frequency: debtForm.schedulingMode === 'SCHEDULED' ? debtForm.frequency : null,
+        numberOfInstallments: debtForm.schedulingMode === 'SCHEDULED' ? parseInt(debtForm.numberOfInstallments, 10) : null
       });
       setShowDebtModal(false);
       setDebtForm(emptyDebtForm());
@@ -222,6 +283,7 @@ const Debts = () => {
             <span className={`status-badge ${statusKey}`}>
               {(debt.status || 'ACTIVE').replace(/_/g, ' ')}
             </span>
+            {debt.schedulingMode === 'SCHEDULED' && <div style={{ fontSize: '0.75rem', marginTop: '4px', color: 'var(--text-secondary)' }}>Scheduled ({debt.frequency})</div>}
           </td>
           <td className="text-right">
             {debt.status !== 'PAID' && (
@@ -243,6 +305,9 @@ const Debts = () => {
           <p className="portal-subtitle">Manage debtors (money owed to you) and creditors (money you owe).</p>
         </div>
         <div className="header-actions">
+          <button type="button" className="btn-icon-outline" title="Scheduler Settings" onClick={() => setShowSchedulerSettings(!showSchedulerSettings)}>
+            <Settings size={18} />
+          </button>
           <button type="button" className="btn-secondary" onClick={() => setShowContactModal(true)}>Add Contact</button>
           <button type="button" className="btn-primary" onClick={openDebtModal} disabled={contacts.length === 0}>
             <Plus size={18} /> Record Debt
@@ -251,6 +316,69 @@ const Debts = () => {
       </div>
 
       {error && <div className="portal-error">{error}</div>}
+
+      {/* Scheduler Settings Panel */}
+      {showSchedulerSettings && (
+        <Card className="scheduler-card">
+          <div className="scheduler-header">
+            <div className="scheduler-title-row">
+              <Clock size={20} className="scheduler-icon" />
+              <div>
+                <h3 className="scheduler-title">Due Date Checker Schedule</h3>
+                <p className="scheduler-subtitle">Configure when the system checks for overdue debts daily</p>
+              </div>
+            </div>
+          </div>
+          <div className="scheduler-body">
+            <div className="scheduler-current">
+              <span className="scheduler-label">Current Schedule</span>
+              <div className="scheduler-badge">
+                <Clock size={14} />
+                <span>Daily at {schedulerConfig.displayTime || '00:00'}</span>
+              </div>
+              {schedulerConfig.cronExpression && (
+                <span className="scheduler-cron">Cron: {schedulerConfig.cronExpression}</span>
+              )}
+            </div>
+            <div className="scheduler-form">
+              <label className="scheduler-input-label">
+                Set Check Time (24h format)
+                <input
+                  type="time"
+                  value={schedulerTime}
+                  onChange={(e) => setSchedulerTime(e.target.value)}
+                  className="scheduler-time-input"
+                />
+              </label>
+              <div className="scheduler-actions">
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={handleSaveScheduler}
+                  disabled={isSchedulerSaving}
+                >
+                  {isSchedulerSaving ? 'Saving...' : 'Save Schedule'}
+                </button>
+                <button
+                  type="button"
+                  className="btn-run-now"
+                  onClick={handleRunNow}
+                  disabled={isRunningNow}
+                  title="Run the overdue check right now"
+                >
+                  {isRunningNow ? <RefreshCw size={16} className="spin" /> : <Play size={16} />}
+                  {isRunningNow ? 'Running...' : 'Run Now'}
+                </button>
+              </div>
+            </div>
+            {schedulerMessage && (
+              <div className={`scheduler-message ${schedulerMessage.includes('Failed') || schedulerMessage.includes('Invalid') ? 'error' : 'success'}`}>
+                {schedulerMessage}
+              </div>
+            )}
+          </div>
+        </Card>
+      )}
 
       <div className="stats-grid">
         <Card dark>
@@ -357,7 +485,25 @@ const Debts = () => {
                 </select>
               </label>
               <label>Original Amount<input type="number" min="1" value={debtForm.originalAmount} onChange={(e) => setDebtForm({ ...debtForm, originalAmount: e.target.value })} required /></label>
-              <label>Due Date<input type="date" value={debtForm.dueDate} onChange={(e) => setDebtForm({ ...debtForm, dueDate: e.target.value })} required /></label>
+              <label>Scheduling Mode
+                <select value={debtForm.schedulingMode} onChange={(e) => setDebtForm({ ...debtForm, schedulingMode: e.target.value })}>
+                  <option value="SINGLE">Single Payment</option>
+                  <option value="SCHEDULED">Scheduled Installments</option>
+                </select>
+              </label>
+              <label>{debtForm.schedulingMode === 'SCHEDULED' ? 'Start Date' : 'Due Date'}<input type="date" value={debtForm.dueDate} onChange={(e) => setDebtForm({ ...debtForm, dueDate: e.target.value })} required /></label>
+              {debtForm.schedulingMode === 'SCHEDULED' && (
+                <>
+                  <label>Frequency
+                    <select value={debtForm.frequency} onChange={(e) => setDebtForm({ ...debtForm, frequency: e.target.value })}>
+                      <option value="WEEKLY">Weekly</option>
+                      <option value="BI_WEEKLY">Bi-Weekly</option>
+                      <option value="MONTHLY">Monthly</option>
+                    </select>
+                  </label>
+                  <label>Number of Installments<input type="number" min="2" value={debtForm.numberOfInstallments} onChange={(e) => setDebtForm({ ...debtForm, numberOfInstallments: e.target.value })} required /></label>
+                </>
+              )}
               <button type="submit" className="btn-primary" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save Debt Record'}</button>
             </form>
           </div>

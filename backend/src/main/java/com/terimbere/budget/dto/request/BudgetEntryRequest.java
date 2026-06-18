@@ -26,4 +26,6 @@ public class BudgetEntryRequest {
 
     @NotNull(message = "Entry date is required")
     private LocalDate entryDate;
+
+    private BigDecimal amountSaved;
 }

@@ -3,6 +3,7 @@ package com.terimbere.budget.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -23,4 +24,12 @@ public class BudgetRequest {
 
     @NotBlank(message = "Status is required")
     private String status; // ACTIVE, ARCHIVED, DRAFT
+
+    private String budgetType; // PERSONAL, BUSINESS, PROJECT, SAVINGS, FAMILY
+
+    private String notes;
+
+    private BigDecimal savingsGoal;
+
+    private BigDecimal projectTotalBudget;
 }

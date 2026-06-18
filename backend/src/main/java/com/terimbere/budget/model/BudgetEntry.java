@@ -1,5 +1,7 @@
 package com.terimbere.budget.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -11,11 +13,13 @@ import java.util.UUID;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class BudgetEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "budget_id", nullable = false)
     private Budget budget;
@@ -38,4 +42,7 @@ public class BudgetEntry {
 
     @Column(name = "entry_date", nullable = false)
     private LocalDate entryDate;
+
+    @Column(name = "amount_saved", precision = 15, scale = 2)
+    private BigDecimal amountSaved;
 }

@@ -24,4 +24,8 @@ public class DebtRecordRequest {
     private LocalDate dueDate;
 
     private String status; // ACTIVE, PARTIALLY_PAID, PAID, OVERDUE
+
+    private String schedulingMode; // SINGLE or SCHEDULED
+    private String frequency; // WEEKLY, BI_WEEKLY, MONTHLY
+    private Integer numberOfInstallments;
 }

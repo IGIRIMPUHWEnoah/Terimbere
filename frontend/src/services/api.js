@@ -90,7 +90,10 @@ export const debtService = {
   getPayments: (debtId) => api.get(`/debts/${debtId}/payments`),
   recordPayment: (debtId, payload) => api.post(`/debts/${debtId}/payments`, payload),
   getRemainingSum: (direction) => api.get(`/debts/remaining-sum?direction=${direction}`),
-  getOverdue: () => api.get('/debts/overdue')
+  getOverdue: () => api.get('/debts/overdue'),
+  getSchedulerConfig: () => api.get('/debts/scheduler'),
+  updateSchedulerConfig: (payload) => api.put('/debts/scheduler', payload),
+  runSchedulerNow: () => api.post('/debts/scheduler/run-now')
 };
 
 export const billService = {

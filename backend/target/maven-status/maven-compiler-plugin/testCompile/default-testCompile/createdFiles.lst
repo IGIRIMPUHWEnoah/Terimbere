@@ -1,2 +1,6 @@
 com\terimbere\budget\service\DebtServiceTest.class
+com\terimbere\budget\service\BillServiceTest.class
+com\terimbere\budget\service\AuthServiceTest.class
+com\terimbere\budget\service\BudgetServiceTest.class
+com\terimbere\budget\service\DebtSchedulerTest.class
 com\terimbere\budget\TerimbereApplicationTests.class
